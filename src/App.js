@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Button from "@mui/material/Button";
 import { TextField } from "@mui/material";
 import "./App.css";
@@ -56,6 +56,7 @@ function SignOut() {
 }
 
 function ChatRoom() {
+  const dummy = useRef();
   const messagesRef = firestore.collection("messages");
   const query = messagesRef.orderBy("createdAt").limit(25);
 
@@ -76,30 +77,30 @@ function ChatRoom() {
     });
 
     setFormValue("");
+
+    dummy.current.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <>
-      <div className="room-body">
+      <main>
         {messages &&
           messages.map((msg) => (
             <ChatMessage key={msg.uniqueId} message={msg} />
           ))}
-      </div>
+
+        <div ref={dummy}></div>
+      </main>
 
       <form onSubmit={sendMessage}>
-        <TextField
-          id="outlined-basic"
-          label="Gerald"
-          variant="outlined"
+        <input
           value={formValue}
-          style={{ color: "white", padding: "10px" }}
           onChange={(e) => setFormValue(e.target.value)}
-        />
+        ></input>
 
-        <Button type="submit" variant="contained" color="primary">
+        <button type="submit" variant="contained" color="primary">
           🔥{" "}
-        </Button>
+        </button>
       </form>
     </>
   );

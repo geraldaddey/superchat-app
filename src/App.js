@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import Button from "@mui/material/Button";
+import { TextField } from "@mui/material";
 import "./App.css";
 
-import firebase from "firebase/app";
-import "firebase/firestore";
-import "firebase/auth";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
 
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
@@ -25,10 +27,12 @@ const firestore = firebase.firestore();
 function App() {
   const [user] = useAuthState(auth);
   return (
-    <div className="App">
-      <header className="App-header"></header>
-      <section>{user ? <ChatRoom /> : <signIn />}</section>
-    </div>
+    <>
+      <div className="App">
+        <header className="App-header"></header>
+        <section>{user ? <ChatRoom /> : <SignIn />}</section>
+      </div>
+    </>
   );
 }
 
@@ -38,7 +42,11 @@ function SignIn() {
     auth.signInWithPopup(provider);
   };
 
-  return <button onClick={signInWithGoogle}>Sign In With Google</button>;
+  return (
+    <Button variant="contained" onClick={signInWithGoogle}>
+      Sign In With Google
+    </Button>
+  );
 }
 
 function SignOut() {
@@ -72,17 +80,26 @@ function ChatRoom() {
 
   return (
     <>
-      <div>
+      <div className="room-body">
         {messages &&
-          messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
+          messages.map((msg) => (
+            <ChatMessage key={msg.uniqueId} message={msg} />
+          ))}
       </div>
 
       <form onSubmit={sendMessage}>
-        <input
+        <TextField
+          id="outlined-basic"
+          label="Gerald"
+          variant="outlined"
           value={formValue}
+          style={{ color: "white", padding: "10px" }}
           onChange={(e) => setFormValue(e.target.value)}
         />
-        <button type="submit">🔥</button>
+
+        <Button type="submit" variant="contained" color="primary">
+          🔥{" "}
+        </Button>
       </form>
     </>
   );
@@ -95,7 +112,7 @@ function ChatMessage(props) {
   return (
     <div className={`message ${messageClass}`}>
       <img src={photoURL} alt="" />
-      <p>{text}</p>;
+      <p>{text}</p>
     </div>
   );
 }
